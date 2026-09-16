@@ -279,7 +279,6 @@
 				};
 			};
 			buildConfigurationList = CB6B42BA55180CE47E5A2A3E /* Build configuration list for PBXProject "Xueni" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -292,6 +291,7 @@
 				3704457FCB873EBD72F039DD /* XCLocalSwiftPackageReference "XueniKit" */,
 			);
 			preferredProjectObjectVersion = 77;
+			productRefGroup = D892A6570B9D108E2C58088B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
