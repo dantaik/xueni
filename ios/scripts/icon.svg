@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- The web app's mark — the print a wild goose leaves in the snow — in
+       white on near-black. iOS rounds the corners itself. -->
+  <rect width="1024" height="1024" fill="#111111"/>
+  <g fill="none" stroke="#f4f4f4" stroke-width="86" stroke-linecap="round">
+    <path d="M524.8 593.1V337.1"/>
+    <path d="M524.8 593.1L337.1 465.1"/>
+    <path d="M524.8 593.1L712.5 465.1"/>
+    <path d="M524.8 593.1L588.8 768.0"/>
+  </g>
+</svg>

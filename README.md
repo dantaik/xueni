@@ -23,6 +23,19 @@ first launch with "the developer cannot be verified": right-click the app, choos
 in the dialog. macOS remembers the answer. To build it yourself, or to read exactly what the shell
 does, see [`desktop/README.md`](./desktop/README.md).
 
+## For iPhone
+
+[`ios/`](./ios/README.md) holds a native reader for iPhone: SwiftUI over two local SwiftData
+databases — the chain cache (posts, documents, images, scanned ranges) and the reader's own
+(followed authors, the draft) — with the reading logic ported to Swift as a package,
+`XueniKit`, that is held to the codec's own test vectors and runs its tests on Linux. It reads
+both chains from your choice of nodes, keeps everything it has read on the phone, resolves ENS
+names, follows authors by the cheap path, searches what it holds, and exchanges archive and
+settings files with the web app and the CLI. It is drawn in black, white and grey. The phone
+does not publish: a draft written there leaves as a `.md` that "Import .md…" and `xueni publish`
+both read. Open `ios/Xueni.xcodeproj` in Xcode 16 to build it; `.github/workflows/ios.yml`
+builds it on every change.
+
 ## Quick start
 
 The contract is deployed, and both its address (the same on every chain, via CREATE2) and each
