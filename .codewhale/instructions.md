@@ -38,6 +38,11 @@ See `README.md` and `xueni-spec.md`.
   `src-tauri/src/lib.rs` holds the plugins, the menu and the one `transcode_image`
   command; `src-tauri/transcode/` is the image crate and the only Rust tests.
   The web side of the seam is `webapp/src/lib/platform.js`
+- `ios/` — the iPhone app: `Xueni/` is SwiftUI + SwiftData (two stores: the chain
+  cache and the reader's own), `XueniKit/` a Foundation-only Swift package with the
+  codec, scanner, controllers, JSON-RPC failover, ENS, Markdown parser and file
+  formats, tested with `swift test` on Linux; `project.yml` (XcodeGen) generates
+  the committed `Xueni.xcodeproj`
 - `xueni-spec.md` — full technical spec
 
 **Workflows:**
@@ -51,4 +56,6 @@ See `README.md` and `xueni-spec.md`.
   command line tools; the DMG lands in `desktop/src-tauri/target/.../bundle/dmg/`). Tests:
   `cd desktop/src-tauri/transcode && cargo test`. `.github/workflows/desktop.yml` builds on a
   `v*` tag and publishes the GitHub Release the README links to.
+- iOS: `cd ios/XueniKit && swift test` (any platform); the app builds from
+  `ios/Xueni.xcodeproj` in Xcode 16+; `cd ios && xcodegen generate` after editing `project.yml`
 - Webapp: `cd webapp && npm install && npm run dev` (DEV demo: `?fixtures=1`; add `&window=700` to watch the feed fill window by window)

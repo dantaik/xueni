@@ -1,0 +1,82 @@
+# ios.yml — the iPhone app.
+#
+# Kept apart from ci.yml the way desktop.yml is: that workflow is the fast
+# check every push gets, and a macOS runner is neither fast nor free. Two
+# jobs, because the app is built the way the macOS app is built — the part
+# with logic worth testing (ios/XueniKit) is a plain Swift package that
+# runs on Linux, and the SwiftUI shell around it compiles only where Xcode
+# is. The path filter lives on pull requests; a push to main that touches
+# the app runs it too.
+name: ios
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ios/**'
+      - 'codec/test/vectors.json'
+      - '.github/workflows/ios.yml'
+  pull_request:
+    paths:
+      - 'ios/**'
+      - 'codec/test/vectors.json'
+      - '.github/workflows/ios.yml'
+  workflow_dispatch:
+
+jobs:
+  # The Kit on Linux: the codec against the spec's vectors (with a stand-in
+  # brotli that knows only them), the scanner over an in-memory chain, the
+  # failover over a fake wire, the Markdown parser, the file formats.
+  kit-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "6.1"
+      - name: The Kit's vectors are the codec's, byte for byte
+        run: cmp codec/test/vectors.json ios/XueniKit/Tests/XueniKitTests/Resources/vectors.json
+      - run: swift test
+        working-directory: ios/XueniKit
+
+  # The Kit on a Mac — where Apple's brotli decoder exists, so the reference
+  # payloads are really decompressed — and the app, built for the simulator.
+  app-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Xcode
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode*.app | sort -V | tail -1)"
+          xcodebuild -version
+      - run: swift test
+        working-directory: ios/XueniKit
+      - name: XcodeGen
+        run: brew install xcodegen
+      # The committed project is regenerated from project.yml, so a spec
+      # edited without regenerating still builds — and the diff, if any,
+      # is shown so the committed project can be brought up to date.
+      - name: The project from its spec
+        working-directory: ios
+        run: |
+          xcodegen generate --spec project.yml
+          git status --porcelain -- Xueni.xcodeproj Xueni/Info.plist
+      - name: Build for the simulator
+        working-directory: ios
+        run: |
+          xcodebuild build \
+            -project Xueni.xcodeproj \
+            -scheme Xueni \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            -skipPackagePluginValidation \
+            | tee build.log | grep -E 'error:|warning: unre|BUILD (SUCCEEDED|FAILED)' || true
+          grep -q 'BUILD SUCCEEDED' build.log
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: xcodebuild-log
+          path: ios/build.log
+          retention-days: 7
