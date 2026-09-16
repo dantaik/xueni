@@ -247,36 +247,36 @@ final class CodecTests: XCTestCase {
 }
 
 final class PostRefTests: XCTestCase {
-    let hash = "0x41663fee6dd678632e23c8365076b466603b0d0694925e13b0d0d2007bec7844"
+    let txHash = "0x41663fee6dd678632e23c8365076b466603b0d0694925e13b0d0d2007bec7844"
 
     func testReferences() {
-        XCTAssertEqual(PostRef.parse(hash, defaultChainId: 1), PostRef(chainId: 1, txHash: hash))
-        XCTAssertEqual(PostRef.parse("taiko:\(hash)/1", defaultChainId: 1), PostRef(chainId: 167_000, txHash: hash, eventIndex: 1))
-        XCTAssertEqual(PostRef.parse(hash.uppercased().replacingOccurrences(of: "0X", with: "0x"), defaultChainId: 1)?.txHash, hash)
-        XCTAssertNil(PostRef.parse(hash))
-        XCTAssertNil(PostRef.parse("mars:\(hash)", defaultChainId: 1))
-        XCTAssertNil(PostRef.parse("\(hash)/x", defaultChainId: 1))
+        XCTAssertEqual(PostRef.parse(txHash, defaultChainId: 1), PostRef(chainId: 1, txHash: txHash))
+        XCTAssertEqual(PostRef.parse("taiko:\(txHash)/1", defaultChainId: 1), PostRef(chainId: 167_000, txHash: txHash, eventIndex: 1))
+        XCTAssertEqual(PostRef.parse(txHash.uppercased().replacingOccurrences(of: "0X", with: "0x"), defaultChainId: 1)?.txHash, txHash)
+        XCTAssertNil(PostRef.parse(txHash))
+        XCTAssertNil(PostRef.parse("mars:\(txHash)", defaultChainId: 1))
+        XCTAssertNil(PostRef.parse("\(txHash)/x", defaultChainId: 1))
         XCTAssertNil(PostRef.parse("0x1234", defaultChainId: 1))
     }
 
     func testURLs() {
-        XCTAssertEqual(PostRef.parse("https://xueni.xyz/taiko/tx/\(hash)/0", defaultChainId: 1), PostRef(chainId: 167_000, txHash: hash))
-        XCTAssertEqual(PostRef.parse("/tx/\(hash)?headless=1", defaultChainId: 1), PostRef(chainId: 1, txHash: hash))
-        XCTAssertEqual(PostRef.parse("https://xueni.xyz/ethereum/tx/\(hash)/2", defaultChainId: 167_000), PostRef(chainId: 1, txHash: hash, eventIndex: 2))
+        XCTAssertEqual(PostRef.parse("https://xueni.xyz/taiko/tx/\(txHash)/0", defaultChainId: 1), PostRef(chainId: 167_000, txHash: txHash))
+        XCTAssertEqual(PostRef.parse("/tx/\(txHash)?headless=1", defaultChainId: 1), PostRef(chainId: 1, txHash: txHash))
+        XCTAssertEqual(PostRef.parse("https://xueni.xyz/ethereum/tx/\(txHash)/2", defaultChainId: 167_000), PostRef(chainId: 1, txHash: txHash, eventIndex: 2))
     }
 
     func testFormatting() {
-        XCTAssertEqual(PostRef(chainId: 1, txHash: hash).formatted(currentChainId: 1), hash)
-        XCTAssertEqual(PostRef(chainId: 167_000, txHash: hash, eventIndex: 1).formatted(currentChainId: 1), "taiko:\(hash)/1")
-        XCTAssertEqual(PostRef(chainId: 1, txHash: hash).webURL().absoluteString, "https://xueni.xyz/ethereum/tx/\(hash)/0")
+        XCTAssertEqual(PostRef(chainId: 1, txHash: txHash).formatted(currentChainId: 1), txHash)
+        XCTAssertEqual(PostRef(chainId: 167_000, txHash: txHash, eventIndex: 1).formatted(currentChainId: 1), "taiko:\(txHash)/1")
+        XCTAssertEqual(PostRef(chainId: 1, txHash: txHash).webURL().absoluteString, "https://xueni.xyz/ethereum/tx/\(txHash)/0")
     }
 
     func testInArticleReferencesAndImages() {
-        let md = "See [the chest](\(hash)) and [](\(hash)/1), not [this](https://x.y) or ![pic](eth:\(hash)) twice ![pic](eth:\(hash))."
+        let md = "See [the chest](\(txHash)) and [](\(txHash)/1), not [this](https://x.y) or ![pic](eth:\(txHash)) twice ![pic](eth:\(txHash))."
         let refs = PostRefs.references(in: md)
         XCTAssertEqual(refs.count, 2)
         XCTAssertEqual(refs[0].text, "the chest")
         XCTAssertEqual(refs[1].ref.eventIndex, 1)
-        XCTAssertEqual(PostRefs.imageRefs(in: md), [hash])
+        XCTAssertEqual(PostRefs.imageRefs(in: md), [txHash])
     }
 }

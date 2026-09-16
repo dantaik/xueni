@@ -95,7 +95,7 @@ public struct AppleBrotli: BrotliDecompressor {
                     if output.count + produced > maxOutputBytes {
                         throw PayloadError.documentTooLarge(bound: maxOutputBytes)
                     }
-                    output.append(contentsOf: UnsafeBufferPointer(start: buffer, count: produced))
+                    output.append(contentsOf: UnsafeMutableBufferPointer(start: buffer, count: produced))
                 }
                 switch status {
                 case COMPRESSION_STATUS_END:

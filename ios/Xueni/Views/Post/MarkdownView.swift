@@ -194,7 +194,7 @@ enum InlineRenderer {
             case .strikethrough(let content):
                 var a = AttributedString()
                 append(content, to: &a, font: font, bold: bold, italic: italic, chainId: chainId)
-                a.strikethroughStyle = .single
+                a.strikethroughStyle = Text.LineStyle.single
                 out += a
             case .link(let content, let url):
                 var a = AttributedString()
@@ -202,11 +202,11 @@ enum InlineRenderer {
                 switch LinkTarget.of(url) {
                 case .external(let target):
                     a.link = target
-                    a.underlineStyle = .single
+                    a.underlineStyle = Text.LineStyle.single
                     a.foregroundColor = Ink.ink
                 case .post(let txHash, let eventIndex):
                     a.link = postURL(chainId: chainId, txHash: txHash, eventIndex: eventIndex)
-                    a.underlineStyle = .single
+                    a.underlineStyle = Text.LineStyle.single
                     a.foregroundColor = Ink.ink
                 case .none:
                     a.foregroundColor = Ink.soft
